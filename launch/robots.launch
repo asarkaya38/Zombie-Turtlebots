@@ -1,0 +1,49 @@
+<launch>
+
+  <!-- BEGIN ROBOT 1-->
+  <group ns="robot1">
+    <param name="tf_prefix" value="robot1_tf" />
+    <include file="$(find multi_robot)/launch/one_robot.launch" >
+      <arg name="x_pos" value="1" />
+      <arg name="y_pos" value="1" />
+      <arg name="z_pos" value="0" />
+      <arg name="model_name" value="zombie1"/>
+      <arg name="model" value="$(env TURTLEBOT3_MODEL2)"/>
+    </include>
+  </group>
+
+  <!-- BEGIN ROBOT 2-->
+  <group ns="robot2">
+    <param name="tf_prefix" value="robot2_tf" />
+    <include file="$(find multi_robot)/launch/one_robot.launch" >
+      <arg name="x_pos" value="-1" />
+      <arg name="y_pos" value="-1" />
+      <arg name="z_pos" value="0" />
+      <arg name="model_name" value="zombie2"/>
+      <arg name="model" value="$(env TURTLEBOT3_MODEL2)"/>
+    </include>
+  </group>
+  
+  <!-- BEGIN ROBOT 3-->
+  <group ns="robot3">
+    <param name="tf_prefix" value="robot3_tf" />
+    <include file="$(find multi_robot)/launch/one_robot.launch" >
+      <arg name="x_pos" value="-1" />
+      <arg name="y_pos" value="1" />
+      <arg name="z_pos" value="0" />
+      <arg name="model_name" value="turtlebot3_waffle1"/>
+    </include>
+  </group>
+  
+  <!-- BEGIN ROBOT 4-->
+  <group ns="robot4">
+    <param name="tf_prefix" value="robot4_tf" />
+    <include file="$(find multi_robot)/launch/one_robot.launch" >
+      <arg name="x_pos" value="1" />
+      <arg name="y_pos" value="-1" />
+      <arg name="z_pos" value="0" />
+      <arg name="model_name" value="turtlebot3_waffle2"/>
+    </include>
+  </group>
+
+</launch>
