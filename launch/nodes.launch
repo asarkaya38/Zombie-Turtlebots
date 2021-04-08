@@ -1,0 +1,21 @@
+<launch>
+
+  <node
+    pkg="multi_robot"
+    type="runner.py"
+    name="runner"
+    output="screen"
+    args="robot1"
+  >
+  </node>
+
+  <node
+    pkg="multi_robot"
+    type="follower.py"
+    name="follower"
+    output="screen"
+    args="robot2 robot1"
+  >
+  </node>
+  
+</launch>
