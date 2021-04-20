@@ -1,15 +1,23 @@
 <launch>
 
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/empty.world"/>
+  <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch">
+    <arg name="x_pos" default="-1.0"/>
+    <arg name="y_pos" default="2.0"/>
+    <!-- 
+    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/world.world"/>
     <arg name="paused" value="false"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="gui" value="true"/>
     <arg name="headless" value="false"/>
     <arg name="debug" value="false"/>
+     -->
   </include>
 
   <include file="$(find multi_robot)/launch/robots.launch"/>
-  <include file="$(find multi_robot)/launch/nodes.launch"/>
+  <include file="$(find multi_robot)/launch/nonzombie_navigation.launch">
+    <arg name="x_init" value="-1.0"/>
+    <arg name="y_init" value="2.0"/>
+  </include>
+  <!--<include file="$(find multi_robot)/launch/nodes.launch"/> -->
 
 </launch>
