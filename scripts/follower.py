@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import rospy
 import sys
 from std_msgs.msg import String
