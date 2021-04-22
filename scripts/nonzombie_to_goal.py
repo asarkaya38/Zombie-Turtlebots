@@ -48,9 +48,8 @@ def move_to_goal(xGoal,yGoal):
            return False
 
 if __name__ == '__main__':
-   rospy.init_node('map_navigation', anonymous=False)
+   rospy.init_node('nonzombie_navigation', anonymous=False)
    x_goal = 2.02880191803
    y_goal = -1.02200937271
-#    print'start go to goal'
    move_to_goal(x_goal,y_goal)
    rospy.spin()
