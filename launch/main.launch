@@ -14,10 +14,38 @@
   </include>
 
   <include file="$(find multi_robot)/launch/robots.launch"/>
+  
   <include file="$(find multi_robot)/launch/nonzombie_navigation.launch">
     <arg name="x_init" value="-1.0"/>
     <arg name="y_init" value="2.0"/>
   </include>
+  
   <!--<include file="$(find multi_robot)/launch/nodes.launch"/> -->
+
+  <node
+    pkg="multi_robot"
+    type="runner_integ.py"
+    name="runner"
+    output="screen"
+    args="null robot1 5"
+  >
+  </node>
+
+  <node
+    pkg="multi_robot"
+    type="follower_integ.py"
+    name="follower"
+    output="screen"
+    args="robot1 null"
+  >
+  </node>
+
+  <node
+    pkg="multi_robot"
+    type="nonzombie_to_goal.py"
+    name="nonzombie_navigation"
+    output="screen"
+  >
+  </node>
 
 </launch>
