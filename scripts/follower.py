@@ -52,7 +52,7 @@ class follower:
     # Move to goal point
     def decide_motion(self):
         if (self.euclidean_distance() >= 1):
-            self.vel_msg.linear.x = self.linear_vel()
+            self.vel_msg.linear.x = 0.3
             self.vel_msg.angular.z = self.angular_vel()           
         else:
             self.vel_msg.linear.x = 0.0

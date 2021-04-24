@@ -38,7 +38,7 @@
     type="runner.py"
     name="runner"
     output="screen"
-    args="robot1 robot2 5"
+    args="robot1 robot2 3 -9.5 9.5 -9.5 9.5"
   >
   </node>
 

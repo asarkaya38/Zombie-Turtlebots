@@ -9,12 +9,18 @@ from tf.transformations import euler_from_quaternion
 
 selfName = sys.argv[1]
 zombieName = sys.argv[2]
-safe_threshold = int(sys.argv[3])
+safe_threshold = round(float(sys.argv[3]),4)
+min_x = round(float(sys.argv[4]),4)
+max_x = round(float(sys.argv[5]),4)
+min_y = round(float(sys.argv[6]),4)
+max_y = round(float(sys.argv[7]),4)
+
+x_bounds = [min_x,max_x]
+y_bounds = [min_y,max_y]
 
 # Define Global Constants
 mainProgramRate = 1
 num_safe_points = 16
-run_multiplier = 2
 
 class runner:
    # Class Initializer
@@ -82,23 +88,30 @@ class runner:
       self.safe_points[15] = [self.self_position.x,self.self_position.y+safe_threshold]
       self.max_safe_x = self.self_position.x+safe_threshold
       self.min_safe_x = self.self_position.x-safe_threshold
-      self.max_safe_y = self.self_position.x+safe_threshold
-      self.min_safe_y = self.self_position.x-safe_threshold
+      self.max_safe_y = self.self_position.y+safe_threshold
+      self.min_safe_y = self.self_position.y-safe_threshold
 
    # Find the next safe point to move to
    def find_safe_point(self):
+      run = False
       max_euclidean = 0
       max_index = 0
       current_euclidean = 0   
-      for i in range(num_safe_points):
-         current_euclidean = abs(self.euclidean_distance(self.self_position,self.zombie_position))
-         if current_euclidean > max_euclidean:
-            max_euclidean = current_euclidean
-            max_index = i
+      current_safe_point = Point()
+      if self.zombie_in_safe_zone(self.zombie_position):
+         run = True
+         for i in range(num_safe_points):
+            current_safe_point.x = self.safe_points[i][0]
+            current_safe_point.y = self.safe_points[i][1]
+            if self.bounds_check(current_safe_point,x_bounds,y_bounds):
+               current_euclidean = abs(self.euclidean_distance(current_safe_point,self.zombie_position))
+               if current_euclidean > max_euclidean:
+                  max_euclidean = current_euclidean
+                  max_index = i
 
-      self.run_position.x = self.safe_points[i][0]
-      self.run_position.y = self.safe_points[i][1]
-      self.run_point_pub.publish(self.run_position)
+         self.run_position.x = self.safe_points[max_index][0]
+         self.run_position.y = self.safe_points[max_index][1]
+         self.run_point_pub.publish(self.run_position)
 
    # Euclidean distance between current pose and the goal.
    # http://wiki.ros.org/turtlesim/Tutorials/Go%20to%20Goal
@@ -123,7 +136,7 @@ class runner:
    # Move to goal point
    def decide_motion(self):
       if (self.euclidean_distance(self.self_position,self.run_position) >= 1):
-         self.vel_msg.linear.x = self.linear_vel(self.self_position,self.run_position)
+         self.vel_msg.linear.x = 0.5
          self.vel_msg.angular.z = self.angular_vel(self.self_position,self.run_position,self.current_theta)           
       else:
          self.vel_msg.linear.x = 0.0
@@ -134,6 +147,13 @@ class runner:
    # Decide if the given zombie is in the current safe zone
    def zombie_in_safe_zone(self,zombie_point):
       if zombie_point.x < self.max_safe_x and zombie_point.x > self.min_safe_x and zombie_point.y < self.max_safe_y and zombie_point.y > self.min_safe_y:
+         return True
+      else:
+         return False
+
+   # Check to see if the current point is in the defined world bounds
+   def bounds_check(self,point,x_bounds,y_bounds):
+      if (point.x > x_bounds[0] and point.x < x_bounds[1] and point.y > y_bounds[0] and point.y < y_bounds[1]):
          return True
       else:
          return False
