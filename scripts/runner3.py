@@ -108,31 +108,37 @@ class runner:
 
     # Find the next safe point to move to
     def find_safe_point(self):
-        average_run_point = [0,0]
+        average_zombie_point = Point()
         numZombiesInSafeZone = 0
+
+        # Find the average zombie point to run away from
         for i in range(numZombies):
+            if self.zombie_in_safe_zone(self.zombie_positions[i]):
+                numZombiesInSafeZone = numZombiesInSafeZone + 1
+                average_zombie_point.x = average_zombie_point.x + self.zombie_positions[i].x
+                average_zombie_point.y = average_zombie_point.y + self.zombie_positions[i].y
+
+        # Find the farthest safe point from the average zombie point
+        if (numZombiesInSafeZone > 0):
+            average_zombie_point.x = average_zombie_point.x / numZombiesInSafeZone
+            average_zombie_point.y = average_zombie_point.y / numZombiesInSafeZone
+
             max_euclidean = 0
             max_index = 0
             current_euclidean = 0   
             current_safe_point = Point()
-            if self.zombie_in_safe_zone(self.zombie_positions[i]):
-                numZombiesInSafeZone = numZombiesInSafeZone + 1
-                for j in range(num_safe_points):
-                    current_safe_point.x = self.safe_points[j][0]
-                    current_safe_point.y = self.safe_points[j][1]
-                    if self.bounds_check(current_safe_point,x_bounds,y_bounds):
-                        current_euclidean = abs(self.euclidean_distance(current_safe_point,self.zombie_positions[i]))
-                        if current_euclidean > max_euclidean:
-                            max_euclidean = current_euclidean
-                            max_index = j
-                average_run_point[0] = average_run_point[0] + self.safe_points[max_index][0]
-                average_run_point[1] = average_run_point[1] + self.safe_points[max_index][1]
 
-        if (numZombiesInSafeZone > 0):
-            average_run_point[0] = average_run_point[0] / numZombiesInSafeZone
-            average_run_point[1] = average_run_point[1] / numZombiesInSafeZone
-            self.run_position.x = average_run_point[0]
-            self.run_position.y = average_run_point[1]
+            for i in range(num_safe_points):
+                current_safe_point.x = self.safe_points[i][0]
+                current_safe_point.y = self.safe_points[i][1]
+                if self.bounds_check(current_safe_point,x_bounds,y_bounds):
+                    current_euclidean = abs(self.euclidean_distance(current_safe_point,average_zombie_point))
+                    if current_euclidean > max_euclidean:
+                        max_euclidean = current_euclidean
+                        max_index = i
+
+            self.run_position.x = self.safe_points[max_index][0]
+            self.run_position.y = self.safe_points[max_index][1]
             self.run_point_pub.publish(self.run_position)
 
     # Euclidean distance between current pose and the goal.
