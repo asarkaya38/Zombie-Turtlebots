@@ -65,7 +65,7 @@ class nonzombie_nav:
 if __name__ == '__main__':
    rospy.init_node('nonzombie_navigation', anonymous=False)
 
-   rate = rospy.Rate(1)
+   rate = rospy.Rate(10)
 
    # print("Next Location:" + str(x_goal) + ", " +str(y_goal))
    # x_goal = 5.02880191803
