@@ -192,7 +192,7 @@ class runner:
             self.get_odom_self()
             self.get_odom_zombies()
             self.find_safe_point()
-            self.decide_motion()
+            # self.decide_motion()
             self.rate.sleep()
 
 
