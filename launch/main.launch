@@ -1,6 +1,7 @@
 <launch>
 
-  <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch">
+  <include file="$(find multi_robot)/launch/custom_world.launch">
+  <!--<include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch">-->
     <arg name="x_pos" default="-1.0"/>
     <arg name="y_pos" default="2.0"/>
     <!-- 
