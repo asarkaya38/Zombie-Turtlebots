@@ -16,7 +16,7 @@
       <arg name="x_pos" value="1" />
       <arg name="y_pos" value="1" />
       <arg name="z_pos" value="0" />
-      <arg name="model_name" value="zombie1"/>
+      <arg name="model_name" value="runner"/>
       <arg name="model" value="waffle"/>
     </include>
   </group>
@@ -28,26 +28,68 @@
       <arg name="x_pos" value="-1" />
       <arg name="y_pos" value="-1" />
       <arg name="z_pos" value="0" />
+      <arg name="model_name" value="zombie1"/>
+      <arg name="model" value="burger"/>
+    </include>
+  </group>
+
+  <!-- BEGIN ROBOT 3-->
+  <group ns="robot3">
+    <param name="tf_prefix" value="robot3_tf" />
+    <include file="$(find multi_robot)/launch/one_robot.launch" >
+      <arg name="x_pos" value="-1" />
+      <arg name="y_pos" value="1" />
+      <arg name="z_pos" value="0" />
       <arg name="model_name" value="zombie2"/>
+      <arg name="model" value="burger"/>
+    </include>
+  </group>
+
+  <!-- BEGIN ROBOT 4-->
+  <group ns="robot4">
+    <param name="tf_prefix" value="robot4_tf" />
+    <include file="$(find multi_robot)/launch/one_robot.launch" >
+      <arg name="x_pos" value="1" />
+      <arg name="y_pos" value="-1" />
+      <arg name="z_pos" value="0" />
+      <arg name="model_name" value="zombie3"/>
       <arg name="model" value="burger"/>
     </include>
   </group>
 
   <node
     pkg="multi_robot"
-    type="runner.py"
+    type="runner3.py"
     name="runner"
     output="screen"
-    args="robot1 robot2 3 -9.5 9.5 -9.5 9.5"
+    args="robot1 robot2 robot3 robot4 3 -9.5 9.5 -9.5 9.5"
   >
   </node>
 
   <node
     pkg="multi_robot"
     type="follower.py"
-    name="follower"
+    name="follower1"
     output="screen"
     args="robot2 robot1"
+  >
+  </node>
+
+  <node
+    pkg="multi_robot"
+    type="follower.py"
+    name="follower2"
+    output="screen"
+    args="robot3 robot1"
+  >
+  </node>
+
+  <node
+    pkg="multi_robot"
+    type="follower.py"
+    name="follower3"
+    output="screen"
+    args="robot4 robot1"
   >
   </node>
 

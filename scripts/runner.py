@@ -19,7 +19,7 @@ x_bounds = [min_x,max_x]
 y_bounds = [min_y,max_y]
 
 # Define Global Constants
-mainProgramRate = 1
+mainProgramRate = 10
 num_safe_points = 16
 
 class runner:
@@ -93,13 +93,11 @@ class runner:
 
    # Find the next safe point to move to
    def find_safe_point(self):
-      run = False
       max_euclidean = 0
       max_index = 0
       current_euclidean = 0   
       current_safe_point = Point()
       if self.zombie_in_safe_zone(self.zombie_position):
-         run = True
          for i in range(num_safe_points):
             current_safe_point.x = self.safe_points[i][0]
             current_safe_point.y = self.safe_points[i][1]
@@ -164,7 +162,7 @@ class runner:
          self.get_odom_self()
          self.get_odom_zombie()
          self.find_safe_point()
-         #self.decide_motion()
+         self.decide_motion()
          self.rate.sleep()
 
 
