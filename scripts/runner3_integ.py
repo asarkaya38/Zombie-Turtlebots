@@ -146,32 +146,6 @@ class runner:
     def euclidean_distance(self,a,b):
         return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2))
 
-    # Calculate linear velocity to move towards goal
-    # http://wiki.ros.org/turtlesim/Tutorials/Go%20to%20Goal
-    def linear_vel(self,a,b,constant=0.1):
-        return constant * self.euclidean_distance(a,b)
-
-    # Calculate difference in angle between goal and current pose
-    # http://wiki.ros.org/turtlesim/Tutorials/Go%20to%20Goal   
-    def steering_angle(self,a,b):
-        return atan2(b.y - a.y, b.x - a.x)
-
-    # Calculate angular velocity to move towards goal
-    # http://wiki.ros.org/turtlesim/Tutorials/Go%20to%20Goal
-    def angular_vel(self,a,b,theta,constant=1):
-        return constant * (self.steering_angle(a,b) - theta)
-
-    # Move to goal point
-    def decide_motion(self):
-        if (self.euclidean_distance(self.self_position,self.run_position) >= 1):
-            self.vel_msg.linear.x = 0.5
-            self.vel_msg.angular.z = self.angular_vel(self.self_position,self.run_position,self.current_theta)           
-        else:
-            self.vel_msg.linear.x = 0.0
-            self.vel_msg.angular.z = 0.0
-
-        self.vel_pub.publish(self.vel_msg)
-
     # Decide if the given zombie is in the current safe zone
     def zombie_in_safe_zone(self,zombie_point):
         if zombie_point.x < self.max_safe_x and zombie_point.x > self.min_safe_x and zombie_point.y < self.max_safe_y and zombie_point.y > self.min_safe_y:
@@ -192,7 +166,6 @@ class runner:
             self.get_odom_self()
             self.get_odom_zombies()
             self.find_safe_point()
-            self.decide_motion()
             self.rate.sleep()
 
 
