@@ -105,21 +105,7 @@ class follower:
         self.goal = [self.runner_position.x, self.runner_position.y]
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
         
 #####################################################################################################
     #Movement Callbacks
@@ -130,7 +116,7 @@ class follower:
         
     #Rotate to point towards goal
     def point_towards_goal(self):
-        self.point_towards_goal_tolerance = 0.2
+        self.point_towards_goal_tolerance = 0.4 #0.4 rad = 22 degrees
         #print('pointing towards goal')
         self.yaw_to_goal()
         #First decide if robot will turn CW or CCW
@@ -155,7 +141,7 @@ class follower:
         self.yaw_to_goal()
         while abs(self.yaw - self.yaw_goal) > self.point_towards_goal_tolerance: 
             self.vel_msg.linear.x = 0
-            self.vel_msg.angular.z = -15*angular_velocity
+            self.vel_msg.angular.z = -1*angular_velocity
             self.velocity_publisher.publish(self.vel_msg)
             self.get_current_points()
             self.yaw_to_goal()
@@ -166,24 +152,14 @@ class follower:
         self.yaw_to_goal()
         while abs(self.yaw - self.yaw_goal) > self.point_towards_goal_tolerance:
             self.vel_msg.linear.x = 0
-            self.vel_msg.angular.z = 15*angular_velocity
+            self.vel_msg.angular.z = 1*angular_velocity
             self.velocity_publisher.publish(self.vel_msg)
             self.get_current_points()
             self.yaw_to_goal() 
             #print(self.yaw - self.yaw_goal)                   
                 
 
-                 
 
-#            #Check if path straight to goal is clear. If so, break out of obstacle state
- #           self.yaw_to_goal()
-  #          if abs(self.yaw - self.yaw_goal) < 0.1 and self.forward_obstacle_flag_goal == 0:
-   #             self.dealing_with_obstacle = 0
-    #        if sqrt((self.goal[0]-self.self_position.x)**2 + (self.goal[1]-self.self_position.y)**2) < 1.75*stop_distance:
-     #           self.dealing_with_obstacle = 0
-      #      self.get_current_points()
-       #     self.rate.sleep()
-            
  
 #########################################################################################################            
 #########################################################################################################
@@ -191,6 +167,7 @@ class follower:
     # http://wiki.ros.org/turtlesim/Tutorials/Go%20to%20Goal
     def euclidean_distance(self):
         return sqrt(pow((self.runner_position.x - self.self_position.x), 2) + pow((self.runner_position.y - self.self_position.y), 2))
+        
     # Calculate linear velocity to move towards goal
     # http://wiki.ros.org/turtlesim/Tutorials/Go%20to%20Goal
     def linear_vel(self, constant=0.05):
@@ -211,15 +188,12 @@ class follower:
     # Move to goal point
     def decide_motion(self):
         if (self.euclidean_distance() >= 1 and self.all_clear_flag == 1 and self.going_around_wall_flag == 0 and self.forward_obstacle_flag == 0):
-            #print('heading for target')
             self.vel_msg.linear.x = self.linear_vel()
-            self.vel_msg.angular.z = self.angular_vel()           
+            self.vel_msg.angular.z = self.angular_vel()       
         elif self.euclidean_distance() < 0.7:
-            #print('chase ended')
             self.vel_msg.linear.x = 0.0
             self.vel_msg.angular.z = 0.0
-            #print('Zombies win!')
-            time.sleep(10000)
+            print('Zombies win!')
         else:
             #print('going around wall')
             self.vel_msg.linear.x, self.vel_msg.angular.z = self.go_around_wall()
@@ -228,19 +202,17 @@ class follower:
 ################################################################################################################################        
 
     def go_around_wall(self):
-    
-        #Check if runner is to the left or right of the way im currently facing
-        #if to the left, turn left
-        #if to the right, turn right
-        
-        #first, just always go left
         
         self.going_around_wall_flag = 1
         #Move around obstacle
         if self.forward_obstacle_flag == 1:
             #print('turning left')
             self.turn_left()
-        elif self.forward_adjust_left_flag == 1 or self.forward_adjust_left_flag == 1:
+        elif self.forward_adjust_left_flag == 1:
+            #print('adjusting')
+            self.vel_msg.linear.x = linear_velocity
+            self.vel_msg.angular.z = -.5*angular_velocity#*(stop_distance-self.right)
+        elif self.forward_adjust_right_flag == 1:
             #print('adjusting')
             self.vel_msg.linear.x = linear_velocity
             self.vel_msg.angular.z = .5*angular_velocity#*(stop_distance-self.right)
@@ -254,7 +226,7 @@ class follower:
             self.vel_msg.angular.z = 0
         self.get_current_points()
         self.yaw_to_goal()
-        if abs(self.yaw - self.yaw_goal) < 0.03 and self.forward_obstacle_flag_goal == 0:
+        if abs(self.yaw - self.yaw_goal) < 0.2 and self.forward_obstacle_flag_goal == 0:
             #print('no more wall')
             #print(self.yaw)
             #print(self.yaw_goal) 
@@ -265,10 +237,7 @@ class follower:
             self.vel_msg.angular.z = 0
         return self.vel_msg.linear.x, self.vel_msg.angular.z
         
-        
-        
 
-    
     #Turn left when stopped in front of obstacle       
     def turn_left(self):
         self.turning_left_flag = 1   
@@ -279,36 +248,9 @@ class follower:
         self.turned_left_flag = 0
         self.turning_left_flag = 0    
     
-    
-        
-        #follow the wall. Since i turned left, runner will be to the right of front. 
-        #if the runner crosses in front of my view (is either straight ahead or to the left of front), back to the start of the follow algorithm
-    
-    
-    
-    
-    
-        #return self.vel_msg.linear.x, self.vel_msg.angular.z; 
-    
-              
-                
-                
-                
-                
-                
-                
-                
-                
-
-
 
 ##########################################################################################################
 ##########################################################################################################
-
-
-
-
-
     
     # Main Program
     def program(self):
@@ -317,9 +259,9 @@ class follower:
         #Initialize dealing_with_obstacle flag
         self.dealing_with_obstacle = 0
         global angular_velocity
-        angular_velocity = .2 #0.4
+        angular_velocity = .1#.2 #0.4
         global linear_velocity
-        linear_velocity = .125 #0.6
+        linear_velocity = .1#.125 #0.6
         
         #Initialize stop distance- how far away from the wall the robot stops before hitting it
         robot_size = 0.7
@@ -344,27 +286,12 @@ class follower:
             self.point_towards_goal()
         self.vel_msg.linear.x = 0
         self.vel_msg.angular.z = 0
-        self.velocity_publisher.publish(self.vel_msg)    
-        #time.sleep(2000)
-        #print(self.yaw)
-        #print(self.yaw_goal)
-        while not rospy.is_shutdown():
+        self.velocity_publisher.publish(self.vel_msg)
             
-
+        while not rospy.is_shutdown():
             self.get_current_points()
+            self.yaw_to_goal()
             self.decide_motion()
-            #print('goal x')
-            #print(self.goal[0])
-            #print('goal y')
-            #print(self.goal[1])
-            #print('my x')
-            #print(self.self_position.x)
-            #print('my y')
-            #print(self.self_position.y)
-    #        print('yaw to goal')
-     #       print(self.yaw_goal)
-      #      print('my yaw')
-       #     print(self.yaw)
             self.rate.sleep()
 
 if __name__ == '__main__':
