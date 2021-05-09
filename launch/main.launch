@@ -1,17 +1,9 @@
 <launch>
 
-  <include file="$(find multi_robot)/launch/custom_world.launch">
-  <!--<include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch">-->
+  <!--Specify the initial locations of nonzombie turtlebot-->
+  <include file="$(find multi_robot)/launch/custom_world.launch">  
     <arg name="x_pos" default="-1.0"/>
     <arg name="y_pos" default="-1.0"/>
-    <!-- 
-    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/world.world"/>
-    <arg name="paused" value="false"/>
-    <arg name="use_sim_time" value="true"/>
-    <arg name="gui" value="true"/>
-    <arg name="headless" value="false"/>
-    <arg name="debug" value="false"/>
-     -->
   </include>
 
   <include file="$(find multi_robot)/launch/robots.launch"/>
@@ -21,8 +13,6 @@
     <arg name="y_init" value="-1.0"/>
   </include>
   
-  <!--<include file="$(find multi_robot)/launch/nodes.launch"/> -->
-
   <node
     pkg="multi_robot"
     type="runner3_integ.py"
@@ -32,6 +22,7 @@
   >
   </node>
 
+<!--More zombies can be add after here-->
   <node
     pkg="multi_robot"
     type="follower_integ.py"
